@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@theme {
+  --color-parchment: #f7f1e1;
+  --color-parchmentDark: #ebdcb9;
+  --color-inkBlack: #1c1917;
+  --color-trienRed: #991b1b;
+  --color-trienRedDark: #7f1d1d;
+  --color-woodBrown: #452b1f;
+  --color-goldSilk: #b45309;
+
+  --font-sans: "Be Vietnam Pro", sans-serif;
+  --font-serif: "Merriweather", Georgia, serif;
+  --font-han: "Noto Serif TC", "Ma Shan Zheng", serif;
+}
+
+body {
+  background-color: #f4ecdc;
+  background-image: 
+    radial-gradient(#e5d7bd 15%, transparent 16%),
+    radial-gradient(#dfcfb0 15%, transparent 16%);
+  background-size: 50px 50px;
+  background-position: 0 0, 25px 25px;
+  color: #26211d;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.book-border {
+  border: 3px double #8c6b4f;
+  outline: 1px solid #cbb69d;
+  outline-offset: 4px;
+}
+
+.trien-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #991b1b;
+  color: #991b1b;
+  font-weight: 900;
+  letter-spacing: 1px;
+  box-shadow: inset 0 0 5px rgba(153, 27, 27, 0.4);
+  background: rgba(254, 242, 242, 0.75);
+  transform: rotate(-3deg);
+  user-select: none;
+}
+
+.book-shadow {
+  box-shadow: 
+    -10px 0 20px -8px rgba(69, 43, 31, 0.3),
+    0 12px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* Hiệu ứng xoay Flashcard 3D không đè layout */
+.perspective-container {
+  perspective: 1200px;
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+  position: relative;
+  transition: transform 0.5s;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #ebdcb9;
+}
+::-webkit-scrollbar-thumb {
+  background: #967252;
+  border-radius: 4px;
+}

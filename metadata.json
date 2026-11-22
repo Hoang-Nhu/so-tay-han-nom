@@ -1,0 +1,8 @@
+{
+  "name": "Sổ Tay Hán Nôm & Từ Điển Câu Đối Cổ",
+  "description": "Ứng dụng tra cứu từ điển câu đối cổ, kho thẻ ghi nhớ chữ Nôm 3D, và trợ lý AI giải mã Hán Nôm di sản văn hóa Việt Nam.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
