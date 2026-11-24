@@ -401,8 +401,6 @@ const NOM_FLASHCARDS: NomCard[] = [
   { id: 20, char: '靜', hv: 'Tĩnh', nom: 'Tĩnh / Lặng', pinyin: 'JÌNG', strokes: 14, radical: 'Bộ Thanh (青)', meaning: 'Sự yên lặng, tĩnh lặng trong tâm hồn, không bị dao động bởi ngoại cảnh.', context: 'Gia Cát Lượng khuyên con: "Đạm bạc dĩ minh chí, ninh tĩnh dĩ trí viễn".', compounds: 'Thanh tĩnh, Tĩnh tâm, Bình tĩnh.' }
 ];
 
-const GEMINI_STORAGE_KEY = 'han_nom_gemini_api_key';
-
 export default function App() {
   const [activeTab, setActiveTab] = useState<'screen-couplets' | 'screen-flashcard' | 'screen-gemini' | 'screen-about' | 'screen-sources'>('screen-couplets');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -427,8 +425,6 @@ export default function App() {
       text: 'Kính chào quý bạn hữu yêu mến văn hóa Hán Nôm! Ta là trợ lý cổ văn. Quý bạn cần dịch nghĩa, chiết tự hay tra cứu câu đối, hoành phi trên đình chùa, nhà thờ họ xin hãy gửi vào đây.'
     }
   ]);
-  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
-  const [apiKeyInput, setApiKeyInput] = useState('');
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
   // Filtered Couplets
@@ -512,41 +508,17 @@ export default function App() {
     setIsFlashcardFlipped(false);
   };
 
-  const openApiKeyModal = () => {
-    setApiKeyInput(localStorage.getItem(GEMINI_STORAGE_KEY) || '');
-    setIsApiKeyModalOpen(true);
-  };
-
-  const saveApiKey = () => {
-    const key = apiKeyInput.trim();
-    if (key) {
-      localStorage.setItem(GEMINI_STORAGE_KEY, key);
-    } else {
-      localStorage.removeItem(GEMINI_STORAGE_KEY);
-    }
-    setIsApiKeyModalOpen(false);
-  };
-
-  const generateLocalScholarResponse = (prompt: string): string => {
-    const p = prompt.toLowerCase();
-    if (p.includes('tổ tông công đức') || p.includes('tử hiếu tôn hiền')) {
-      return `📜 **Giải mã Câu Đối Nhà Thờ Họ:**\n\n• **Chữ Hán:** 祖宗功德千年盛 - 子孝孫賢萬代榮\n• **Âm Hán Việt:** Tổ tông công đức thiên niên thịnh / Tử hiếu tôn hiền vạn đại vinh.\n• **Dịch nghĩa:** Công đức của tổ tiên ngàn năm còn thịnh đạt / Con thảo cháu hiền muôn đời hưởng vinh hoa.\n• **Ý nghĩa tâm linh:** Đây là câu đối mẫu mực trong đạo hiếu của người Việt, nhắc nhở con cháu giữ gìn gia phong tổ tiên để lại.`;
-    }
-    if (p.includes('phật pháp') || p.includes('giác ngạn')) {
-      return `🪷 **Giải mã Câu Đối Thiền Môn:**\n\n• **Chữ Hán:** 佛法慈悲普度迷途登覺岸 - 僧徒弘化指歸淨度證菩提\n• **Âm Hán Việt:** Phật pháp từ bi phổ độ mê đồ đăng giác ngạn / Tăng đồ hoằng hóa chỉ quy tịnh độ chứng bồ đề.\n• **Dịch nghĩa:** Phật pháp từ bi cứu độ chúng sinh lạc lối lên bờ giác ngộ; Chư tăng hoằng hóa chỉ đường về cõi tịnh độ chứng quả bồ đề.\n• **Ý nghĩa:** Treo tại cổng tam quan hoặc chính điện chùa, khuyên răn con người bỏ buông chấp niệm trần tục.`;
-    }
-    if (p.includes('thiên tăng tuế nguyệt')) {
-      return `🌸 **Giải mã Câu Đối Chúc Xuân:**\n\n• **Chữ Hán:** 天增歲月人增壽 - 春滿乾坤福滿堂\n• **Âm Hán Việt:** Thiên tăng tuế nguyệt nhân tăng thọ / Xuân mãn càn khôn phúc mãn đường.\n• **Dịch nghĩa:** Trời thêm năm tháng người thêm thọ; Xuân ngập đất trời phúc đầy nhà.\n• **Ý nghĩa:** Lời chúc tụng đầu năm cầu mong gia đạo bình an, cha mẹ ông bà bách niên giai lão.`;
-    }
-    if (p.includes('hiếu vi tiên') || p.includes('hòa vi quý')) {
-      return `✍️ **Giải mã Triết Lý Tu Thân:**\n\n• **Chữ Hán:** 百善孝為先 - 萬事和為貴\n• **Âm Hán Việt:** Bách thiện hiếu vi tiên / Vạn sự hòa vi quý.\n• **Dịch nghĩa:** Trong trăm nết thiện chữ hiếu đứng đầu; Trong muôn sự ở đời sự hòa thuận là quý báu nhất.\n• **Chiết tự:** Chữ Hiếu (孝) gồm chữ Lão (老) ở trên che chở cho chữ Tử (子) ở dưới; thể hiện sự phụng dưỡng và kính nhớ công lao sinh thành.`;
-    }
-    return `📖 **Phân tích của Chuyên Gia Hán Nôm về: "${prompt}"**\n\n• **Về ngữ âm & cú pháp:** Các câu đối cổ tuân thủ luật biền ngẫu nghiêm ngặt về thanh (bằng - trắc) và loại từ (danh đối danh, động đối động).\n• **Ý nghĩa:** Chứa đựng lời chúc cát tường, rèn luyện nhân cách và lòng biết ơn đối với nguồn cội dân tộc.\n• *(Gợi ý: Quý bạn có thể nhập API Key cá nhân trong nút 'Khóa API' để giải mã mọi câu đối cổ theo thời gian thực).*`;
-  };
-
   const sendToGemini = async (customPrompt?: string) => {
     const text = (customPrompt ?? aiInput).trim();
-    if (!text) return;
+    if (!text || isAiLoading) return;
+
+    const historyPayload = chatMessages
+      .filter(msg => msg.id !== 'init')
+      .slice(-8)
+      .map(msg => ({
+        role: msg.role === 'user' ? ('user' as const) : ('model' as const),
+        text: msg.text
+      }));
 
     const userMsg: ChatMessage = {
       id: 'usr-' + Date.now(),
@@ -558,37 +530,28 @@ export default function App() {
     if (!customPrompt) setAiInput('');
     setIsAiLoading(true);
 
-    const apiKey = localStorage.getItem(GEMINI_STORAGE_KEY);
     let reply = '';
 
-    if (apiKey) {
-      try {
-        const systemInstruction = "Bạn là một Chuyên Gia Hán Nôm học và Văn hóa Cổ Việt Nam uyên thâm. Hãy cung cấp phiên âm Hán Việt chuẩn, dịch nghĩa tiếng Việt, chiết tự và ý nghĩa văn hóa, vị trí treo.";
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        const payload = {
-          contents: [{ role: 'user', parts: [{ text: `${systemInstruction}\n\nNgười dùng hỏi: ${text}` }] }]
-        };
+    try {
+      const res = await fetch('/api/gemini/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: text,
+          history: historyPayload
+        })
+      });
 
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+      const data = await res.json().catch(() => ({}));
 
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData?.error?.message || 'Không thể gọi API');
-        }
-
-        const data = await res.json();
-        reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      } catch (err: unknown) {
-        const errMsg = err instanceof Error ? err.message : 'Lỗi kết nối';
-        reply = `⚠️ Lỗi kết nối API: ${errMsg}. Hệ thống chuyển về phân tích nội bộ bên dưới:\n\n` + generateLocalScholarResponse(text);
+      if (!res.ok) {
+        throw new Error(data?.error || `Lỗi máy chủ (${res.status})`);
       }
-    } else {
-      await new Promise(r => setTimeout(r, 600));
-      reply = generateLocalScholarResponse(text);
+
+      reply = data?.reply || 'Không nhận được phản hồi từ hệ thống AI.';
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : 'Lỗi kết nối máy chủ';
+      reply = `⚠️ ${errMsg}`;
     }
 
     setIsAiLoading(false);
@@ -602,8 +565,17 @@ export default function App() {
     ]);
   };
 
+  const escapeHtml = (text: string) => {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
   const formatResponse = (str: string) => {
-    return str
+    return escapeHtml(str)
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/•/g, '<span class="text-trienRed font-bold">•</span>')
       .replace(/\n/g, '<br/>');
@@ -1025,13 +997,6 @@ export default function App() {
                     <p className="text-xs text-stone-600">Dịch nghĩa, chiết tự, giải mã hoành phi câu đối và ngữ cảnh tâm linh</p>
                   </div>
                 </div>
-                <button
-                  onClick={openApiKeyModal}
-                  title="Cài đặt khóa API cá nhân an toàn"
-                  className="text-xs text-stone-700 bg-amber-100 hover:bg-amber-200 border border-amber-800/30 px-2.5 py-1.5 rounded flex items-center gap-1 transition cursor-pointer"
-                >
-                  <i className="fa-solid fa-key text-goldSilk"></i> <span>Khóa API</span>
-                </button>
               </div>
 
               <div className="mb-4">
@@ -1263,47 +1228,6 @@ export default function App() {
         )}
 
       </main>
-
-      {/* ==================== MODAL CẤU HÌNH API KEY ==================== */}
-      {isApiKeyModalOpen && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-          <div className="bg-parchment book-border p-6 rounded-xl max-w-md w-full shadow-2xl relative">
-            <h3 className="text-lg font-serif font-bold text-trienRed mb-2 flex items-center gap-2">
-              <i className="fa-solid fa-shield-halved"></i> Cài Đặt Khóa Gemini API
-            </h3>
-            <p className="text-xs text-stone-700 leading-relaxed mb-4">
-              Khóa API của bạn được lưu <strong>trực tiếp trong trình duyệt cá nhân (localStorage)</strong> và không bao giờ chuyển lên máy chủ khác.
-            </p>
-            <div className="mb-4">
-              <label className="block text-xs font-semibold text-stone-800 mb-1">Google Gemini API Key:</label>
-              <input
-                type="password"
-                value={apiKeyInput}
-                onChange={e => setApiKeyInput(e.target.value)}
-                placeholder="AIzaSy..."
-                className="w-full px-3 py-2 bg-white border border-amber-900/40 rounded text-sm font-mono focus:outline-none focus:ring-2 focus:ring-trienRed"
-              />
-              <span className="text-[11px] text-stone-500 mt-1 block">
-                * Nếu bạn chưa có Key, ứng dụng vẫn hoạt động với cơ chế mô phỏng chuyên gia có sẵn!
-              </span>
-            </div>
-            <div className="flex justify-end gap-2 text-sm">
-              <button
-                onClick={() => setIsApiKeyModalOpen(false)}
-                className="px-4 py-1.5 rounded bg-stone-300 hover:bg-stone-400 text-stone-800 cursor-pointer"
-              >
-                Đóng
-              </button>
-              <button
-                onClick={saveApiKey}
-                className="px-4 py-1.5 rounded bg-trienRed hover:bg-trienRedDark text-white font-semibold cursor-pointer"
-              >
-                Lưu Khóa
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ==================== CHÂN TRANG ==================== */}
       <footer className="mt-auto bg-[#2b170e] text-amber-200/80 py-4 border-t border-amber-900/40 text-xs text-center">
